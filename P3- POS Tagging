@@ -1,0 +1,23 @@
+import nltk
+
+print("Downloading NLTK data (once-off)...")
+nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger')
+print("Download complete.")
+
+#Define Sentenses
+sentence = "The quick brown fox jumps over the lazy dog."
+
+#Split into word
+words = nltk.word_tokenize(sentence)
+
+#POS Tagging
+pos_tags = nltk.pos_tag(words)
+
+#Print the results
+print("\n--- POS Tagging using NLTK ---")
+print(f"Sentence: {sentence}")
+print("\nResults:")
+for word, tag in pos_tags:
+    # This f-string (with curly braces) correctly prints the variables
+    print(f"  {word} -> {tag}")
