@@ -6,12 +6,10 @@ print("Downloading NLTK data...")
     nltk.download('omw-1.4')
     print("Download complete.")
 
-# Initialize NLTK tools
 stemmer = PorterStemmer()
 lemmatizer = WordNetLemmatizer()
 
-# --- 2. "Add/Delete Table" Rules ---
-# Affix lists for your rule-based model
+
 PREFIXES = ["un", "re", "in", "dis", "pre", "post", "mis"]
 SUFFIXES = ["s", "es", "ed", "ing", "er", "tion", "ness", "ment", "able", "ful", "less"]
 
@@ -23,35 +21,26 @@ def delete_affix(word):
     """'DELETE' function: Remove prefix/suffix if present and return possible root forms."""
     results = []
     
-    # Check for a prefix
     for p in PREFIXES:
         if word.startswith(p) and len(word) > len(p) + 2:
             results.append(word[len(p):]) # Get the root after the prefix
 
-    # Check for a suffix
     for s in SUFFIXES:
         if word.endswith(s) and len(word) > len(s) + 2:
             results.append(word[:-len(s)]) # Get the root before the suffix
 
     if not results:
-        results.append(word)  # no change
+        results.append(word) 
         
     return list(set(results)) # Return unique roots found
 
 def analyze_word(word):
-    """
-    Perform morphological analysis: stem, lemma, affix variations.
-    (This is your original function, it's perfect)
-    """
-    # NLTK Analysis
     stem = stemmer.stem(word)
     lemma_n = lemmatizer.lemmatize(word, pos='n')
     lemma_v = lemmatizer.lemmatize(word, pos='v')
 
-    # Rule-Based "DELETE"
     roots = delete_affix(word)
 
-    # Rule-Based "ADD" (for demonstration)
     variations = []
     for r in roots:
         # Just add one prefix and one suffix to demo
@@ -67,16 +56,13 @@ def analyze_word(word):
         "Generated (by Add)": ", ".join(set(variations))
     }
 
-# --- 3. Analysis Phase (No Pandas) ---
 words = ["running", "unhappiness", "redo", "studies", "player"]
 
 print("--- Morphological Analysis Results ---")
 
-# Instead of building a DataFrame, just loop and print
 for w in words:
     result = analyze_word(w)
     
-    # Print the results for each word clearly
     print(f"\n--- Analysis for: '{result['Word']}' ---")
     print(f"  Stem (NLTK):        {result['Stem (NLTK)']}")
     print(f"  Lemma-Noun (NLTK):  {result['Lemma-Noun (NLTK)']}")
