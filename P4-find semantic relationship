@@ -1,0 +1,56 @@
+import nltk
+from nltk.corpus import wordnet as wn
+
+    print("Downloading NLTK data (once-off)...")
+    nltk.download('wordnet')
+    nltk.download('omw-1.4')
+    print("Download complete.")
+
+
+def get_semantic_relations(word):
+    
+    synsets = wn.synsets(word)
+    
+    relations = {
+        "Word": word,
+        "Synonyms": set(),
+        "Antonyms": set(),
+        "Hypernyms": set(),
+        "Hyponyms": set()
+    }
+
+    if not synsets:
+        return relations 
+
+    first_syn = synsets[0]
+
+    for lemma in first_syn.lemmas():
+        relations["Synonyms"].add(lemma.name())
+        
+        if lemma.antonyms():
+            relations["Antonyms"].add(lemma.antonyms()[0].name())
+
+    for hyper in first_syn.hypernyms():
+        if hyper.lemmas():
+            relations["Hypernyms"].add(hyper.lemmas()[0].name())
+            
+    for hypo in first_syn.hyponyms():
+        if hypo.lemmas():
+            relations["Hyponyms"].add(hypo.lemmas()[0].name())
+
+    return relations
+
+text_words = ['happy', 'sad', 'dog', 'car'] 
+
+print("--- WordNet Semantic Relations ---")
+print("Note: Analyzing the *first* (most common) meaning of each word.\n")
+
+for word in text_words:
+    results = get_semantic_relations(word)
+    
+    print(f"--- Analysis for: '{results['Word']}' ---")
+    
+    print(f"  Synonyms:  {', '.join(list(results['Synonyms'])[:5]) or 'None'}")
+    print(f"  Antonyms:  {', '.join(list(results['Antonyms'])[:5]) or 'None'}")
+    print(f"  Hypernyms: {', '.join(list(results['Hypernyms'])[:5]) or 'None'}")
+    print(f"  Hyponyms:  {', '.join(list(results['Hyponyms'])[:5]) or 'None'}")
