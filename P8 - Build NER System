@@ -1,0 +1,28 @@
+import spacy
+from spacy import displacy
+
+try:
+    nlp = spacy.load("en_core_web_sm")
+except IOError:
+    print("Error: 'en_core_web_sm' model not found.")
+    print("Please run: python -m spacy download en_core_web_sm")
+    exit()
+
+print("--- NER System Loaded ---")
+
+text = ("Apple is looking at buying a U.K. startup called Aurenix.ai "
+        "for $1 billion. Tim Cook met with the founders in London.")
+
+doc = nlp(text)
+
+print(f"\nAnalyzing text: \"{text}\"")
+print("\n--- Entities Found ---")
+
+if not doc.ents:
+    print("No entities found.")
+else:
+    for ent in doc.ents:
+        print(f"  > Text: '{ent.text}',  Label: '{ent.label_}'")
+
+print("\n--- Visual Evaluation (HTML) ---")
+html = displacy.render(doc, style="ent")
