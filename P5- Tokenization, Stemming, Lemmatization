@@ -1,0 +1,89 @@
+import nltk
+from nltk.tokenize import (
+    word_tokenize, 
+    WhitespaceTokenizer, 
+    TreebankWordTokenizer, 
+    TweetTokenizer, 
+    MWETokenizer
+)
+from nltk.stem import PorterStemmer, SnowballStemmer
+from nltk.stem import WordNetLemmatizer
+from nltk.corpus import wordnet
+from nltk import pos_tag
+
+# --- 1. Setup Phase: Download NLTK data ---
+try:
+    nltk.data.find('tokenizers/punkt')
+    nltk.data.find('taggers/averaged_perceptron_tagger')
+    nltk.data.find('corpora/wordnet.zip')
+    nltk.data.find('corpora/omw-1.4.zip')
+except LookupError:
+    print("Downloading NLTK data (once-off)...")
+    nltk.download('punkt')
+    nltk.download('averaged_perceptron_tagger')
+    nltk.download('wordnet')
+    nltk.download('omw-1.4')
+    print("Download complete.")
+
+# --- Input Dataset (Sample Sentence) ---
+sentence = "I'm enjoying natural language processing with Python! Let's test some multi-word expressions."
+print(f"--- Original Sentence ---")
+print(sentence)
+
+# --- 2. Tokenization ---
+print("\n--- 1. Tokenization ---")
+
+# Type 1: Whitespace
+ws_tokens = WhitespaceTokenizer().tokenize(sentence)
+print(f"Whitespace: {ws_tokens}")
+
+# Type 2: Punctuation-based (NLTK's default)
+std_tokens = word_tokenize(sentence)
+print(f"Punctuation-based: {std_tokens}")
+
+# Type 3: Treebank
+tb_tokens = TreebankWordTokenizer().tokenize(sentence)
+print(f"Treebank: {tb_tokens}")
+
+# Type 4: Tweet
+tw_tokens = TweetTokenizer().tokenize(sentence)
+print(f"Tweet: {tw_tokens}")
+
+# Type 5: Multi-Word Expression (MWE)
+mwe_tokenizer = MWETokenizer([('natural', 'language'), ('multi-word', 'expressions')])
+mwe_tokens = mwe_tokenizer.tokenize(std_tokens)
+print(f"MWE: {mwe_tokens}")
+
+# --- 3. Stemming ---
+print("\n--- 2. Stemming (on 'std_tokens') ---")
+
+# Type 1: Porter Stemmer
+porter = PorterStemmer()
+porter_stems = [porter.stem(token) for token in std_tokens]
+print(f"Porter: {porter_stems}")
+
+# Type 2: Snowball Stemmer
+snowball = SnowballStemmer("english")
+snowball_stems = [snowball.stem(token) for token in std_tokens]
+print(f"Snowball: {snowball_stems}")
+
+# --- 4. Lemmatization ---
+print("\n--- 3. Lemmatization (on 'std_tokens') ---")
+
+def get_wordnet_pos(tag):
+    if tag.startswith('J'):
+        return wordnet.ADJ
+    elif tag.startswith('V'):
+        return wordvert.VERB
+    elif tag.startswith('N'):
+        return wordnet.NOUN
+    elif tag.startswith('R'):
+        return wordnet.ADV
+    else:
+        return wordnet.NOUN
+
+lemmatizer = WordNetLemmatizer()
+tagged_tokens = pos_tag(std_tokens)
+lemmatized_tokens = [lemmatizer.lemmatize(word, get_wordnet_pos(tag)) for word, tag in tagged_tokens]
+
+print(f"Lemmas (w/ POS): {lemmatized_tokens}")
