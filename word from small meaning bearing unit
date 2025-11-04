@@ -1,0 +1,55 @@
+import nltk 
+from nltk.stem import PorterStemmer, WordNetLemmatizer
+
+nltk.download('wordnet')
+nltk.download('omw-1.4')
+
+# Initialize the NLTK tools
+stemmer = PorterStemmer()
+lemmatizer = WordNetLemmatizer()
+
+PREFIXES = ["un", "re", "in", "im", "dis", "non", "pre", "post", "mis", "sub", "inter", "trans"]
+SUFFIXES = ["s", "es", "ed", "ing", "er", "or", "tion", "ness", "ment", "able", "ful", "less"]
+
+def split_affixes(word):
+    word = word.lower()
+    prefix, root, suffix = "-", word, "-" # Use '-' for 'None'
+
+    for p in PREFIXES:
+        if word.startswith(p):
+            prefix = p
+            root = word[len(p):]
+            break
+
+    for s in SUFFIXES:
+        if root.endswith(s):
+            suffix = s
+            root = root[:-len(s)] # Update the root
+            break
+            
+    return prefix, root, suffix
+-------------------------------------------
+print("--- Morphological Analyzer ---")
+print("Enter a word to analyze. (Type 'q' to quit)")
+
+while True:
+    word_to_analyze = input("\nEnter word: ")
+
+    if word_to_analyze.lower() == 'q':
+        print("...Exiting program.")
+        break
+        
+    
+    # NLTK Analysis
+    stem = stemmer.stem(word_to_analyze)
+    lemma_n = lemmatizer.lemmatize(word_to_analyze, pos='n') # As a Noun
+    lemma_v = lemmatizer.lemmatize(word_to_analyze, pos='v') # As a Verb
+
+    prefix, root_guess, suffix = split_affixes(word_to_analyze)
+
+    print(f"  Stem (NLTK):     {stem}")
+    print(f"  Lemma-Noun (NLTK): {lemma_n}")
+    print(f"  Lemma-Verb (NLTK): {lemma_v}")
+    print(f"  Prefix (Rule):   {prefix}")
+    print(f"  Root (Rule):     {root_guess}")
+    print(f"  Suffix (Rule):   {suffix}")
