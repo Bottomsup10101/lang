@@ -26,3 +26,9 @@ else:
 
 print("\n--- Visual Evaluation (HTML) ---")
 html = displacy.render(doc, style="ent")
+output_file_name = "ner_visualization.html"
+with open(output_file_name, "w", encoding="utf-8") as file:
+    file.write(html)
+
+print("\n--- Visualization Saved! ---")
+print(f"Success! Open the file '{output_file_name}' in your web browser to see the visual results.")
