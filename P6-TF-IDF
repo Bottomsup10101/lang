@@ -1,0 +1,67 @@
+import pandas as pd
+import nltk
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+from gensim.models import Word2Vec
+import re
+
+# Download NLTK data (tokenizer)
+nltk.download('punkt')
+
+df = pd.read_csv('data.csv')   # file from Kaggle
+
+df.head()
+
+text_columns = [
+    'Make', 'Model', 'Engine Fuel Type', 'Transmission Type',
+    'Driven_Wheels', 'Market Category', 'Vehicle Size', 'Vehicle Style'
+]
+
+# Fill missing values and combine into one column
+df['text'] = df[text_columns].fillna('').apply(lambda x: ' '.join(x), axis=1)
+
+# Clean text
+def clean_text(text):
+    text = text.lower()
+    text = re.sub(r'[^a-z\s]', '', text)
+    return text
+
+df['text'] = df['text'].apply(clean_text)
+texts = df['text']
+print("\nSample Combined Text:\n", texts.head(3))
+
+from sklearn.preprocessing import normalize
+from sklearn.feature_extraction.text import CountVectorizer
+
+cv = CountVectorizer()
+bow_matrix = cv.fit_transform(texts)
+
+bow_df = pd.DataFrame(bow_matrix.toarray(), columns=cv.get_feature_names_out())
+print("\nBag of Words Sample:\n", bow_df.head(5))
+
+# Normalized (each row sums to 1)
+bow_norm = normalize(bow_df, norm='l1')
+bow_norm_df = pd.DataFrame(bow_norm, columns=cv.get_feature_names_out())
+print("\nNormalized Bag of Words:\n", bow_norm_df.head(5))
+
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+tfidf = TfidfVectorizer()
+tfidf_matrix = tfidf.fit_transform(texts)
+tfidf_df = pd.DataFrame(tfidf_matrix.toarray(), columns=tfidf.get_feature_names_out())
+
+print("\nTF-IDF Sample:\n", tfidf_df.head(5))
+
+# Tokenize text
+sentences = [nltk.word_tokenize(text) for text in texts]
+
+# Train Word2Vec
+w2v_model = Word2Vec(sentences, vector_size=50, window=5, min_count=1, workers=4)
+
+# Example: check most similar words
+print("\nMost similar words to 'automatic':")
+print(w2v_model.wv.most_similar('automatic', topn=5))
+
+# Example: get vector for a word
+print("\nVector for 'sedan':\n", w2v_model.wv['sedan'])
+
+
