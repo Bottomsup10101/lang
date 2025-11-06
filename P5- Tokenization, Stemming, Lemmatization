@@ -74,7 +74,7 @@ def get_wordnet_pos(tag):
     if tag.startswith('J'):
         return wordnet.ADJ
     elif tag.startswith('V'):
-        return wordvert.VERB
+        return wordnet.VERB
     elif tag.startswith('N'):
         return wordnet.NOUN
     elif tag.startswith('R'):
