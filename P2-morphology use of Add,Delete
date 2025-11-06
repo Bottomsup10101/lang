@@ -2,9 +2,9 @@ import nltk
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 
 print("Downloading NLTK data...")
-    nltk.download('wordnet')
-    nltk.download('omw-1.4')
-    print("Download complete.")
+nltk.download('wordnet')
+nltk.download('omw-1.4')
+print("Download complete.")
 
 stemmer = PorterStemmer()
 lemmatizer = WordNetLemmatizer()
