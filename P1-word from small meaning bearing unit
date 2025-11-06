@@ -28,7 +28,7 @@ def split_affixes(word):
             break
             
     return prefix, root, suffix
--------------------------------------------
+#-------------------------------------------
 print("--- Morphological Analyzer ---")
 print("Enter a word to analyze. (Type 'q' to quit)")
 
