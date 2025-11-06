@@ -1,10 +1,11 @@
 import nltk
 from nltk.corpus import wordnet as wn
 
-    print("Downloading NLTK data (once-off)...")
-    nltk.download('wordnet')
-    nltk.download('omw-1.4')
-    print("Download complete.")
+
+print("Downloading NLTK data (once-off)...")
+nltk.download('wordnet')
+nltk.download('omw-1.4')
+print("Download complete.")
 
 
 def get_semantic_relations(word):
